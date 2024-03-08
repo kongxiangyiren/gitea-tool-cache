@@ -1,0 +1,25 @@
+{
+  "name": "gitea-tool-cache",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "chcp 65001 && jest --coverage",
+    "build": "rimraf ./dist && ncc build -o dist src/index.ts"
+  },
+  "devDependencies": {
+    "@tsconfig/node16": "^16.1.1",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^16",
+    "@vercel/ncc": "^0.38.1",
+    "jest": "^29.7.0",
+    "jest-circus": "^29.7.0",
+    "rimraf": "^5.0.5",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "@actions/tool-cache": "^2.0.1",
+    "axios": "^1.6.7"
+  }
+}

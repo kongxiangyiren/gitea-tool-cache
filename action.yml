@@ -1,0 +1,19 @@
+name: 'Gitea Tool Cache'
+description: 'A Gitea Action Tool Cache Image Download'
+author: 'kongxiangyiren'
+inputs:
+  node-version:
+    description: 'The node version to use'
+    required: false
+  go-version:
+    description: 'The go version to use'
+    required: false
+  dotnet-version:
+    description: 'The dotnet version to use'
+    required: false
+outputs:
+  dotnet-path:
+    description: 'The path to the dotnet executable'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

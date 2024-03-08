@@ -1,0 +1,10 @@
+{
+  "extends": "@tsconfig/node16",
+  "compilerOptions": {
+    "outDir": "dist",
+    "types": ["node", "jest"],
+    "module": "node16",
+    "moduleResolution": "node16"
+  },
+  "include": ["src/**/*.ts", "**/*.test.ts"]
+}
