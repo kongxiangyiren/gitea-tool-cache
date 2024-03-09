@@ -14,6 +14,8 @@ inputs:
 outputs:
   dotnet-path:
     description: 'The path to the dotnet executable'
+  node-version:
+    description: 'The version of node being used'
 runs:
   using: 'node16'
   main: 'dist/index.js'

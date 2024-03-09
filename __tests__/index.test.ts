@@ -48,14 +48,14 @@ describe('gitea-tool-cache', () => {
     os['platform'] = 'win32';
     os['arch'] = 'x64';
     // node
-    // inputs['node-version'] = '18.18.0';
-    // await nodeInstall();
+    inputs['node-version'] = '18';
+    await nodeInstall();
     // // go
     // inputs['go-version'] = '1.21.1';
     // await goInstall();
     // dotnet
-    inputs['dotnet-version'] = '6.0.100';
-    await dotnetInstall();
+    // inputs['dotnet-version'] = '6.0.100';
+    // await dotnetInstall();
   });
 
   // it('installs linux', async () => {
