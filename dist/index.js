@@ -32262,10 +32262,10 @@ async function nodeInstall() {
         console.log('没有node-version,跳过node安装');
         return;
     }
+    console.log(nodeVersion);
     const version = await (0, gitea_tool_cache_version_alias_1.nodeVersionAlias)(nodeVersion, {
         mirror: 'https://npmmirror.com/mirrors/node'
     }).catch(err => err);
-    console.log(version);
     if (version instanceof Error) {
         console.log('node版本错误', version);
         return;

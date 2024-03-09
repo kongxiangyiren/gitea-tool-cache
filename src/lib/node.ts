@@ -14,10 +14,11 @@ export async function nodeInstall() {
     console.log('没有node-version,跳过node安装');
     return;
   }
+  console.log(nodeVersion);
   const version = await nodeVersionAlias(nodeVersion, {
     mirror: 'https://npmmirror.com/mirrors/node'
   }).catch(err => err);
-  console.log(version);
+
   if (version instanceof Error) {
     console.log('node版本错误', version);
     return;
