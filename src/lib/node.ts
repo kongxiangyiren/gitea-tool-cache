@@ -14,7 +14,6 @@ export async function nodeInstall() {
     console.log('没有node-version,跳过node安装');
     return;
   }
-  console.log(nodeVersion);
   const version = await nodeVersionAlias(nodeVersion, {
     mirror: 'https://npmmirror.com/mirrors/node'
   }).catch(err => err);
