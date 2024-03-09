@@ -741,14 +741,14 @@
   resolved "https://registry.npmmirror.com/@vercel/ncc/-/ncc-0.38.1.tgz#13f08738111e1d9e8a22fd6141f3590e54d9a60e"
   integrity sha512-IBBb+iI2NLu4VQn3Vwldyi2QwaXt5+hTyh58ggAMoCGE6DJmPvwL3KPBWcJl1m9LYPChBLE980Jw+CS4Wokqxw==
 
-all-node-versions@^13.0.0:
-  version "13.0.0"
-  resolved "https://registry.npmmirror.com/all-node-versions/-/all-node-versions-13.0.0.tgz#41e3fae6dbfa38f39a5d7ff70e5d039c165dcc10"
-  integrity sha512-HfGnf0j4oekFwRN1LJgs86pMKb69p/k99tB8CTpVevQHDHiefe+NSvueRSF/5nESoaCInhoAJ9l1dgNuFQxlqg==
+all-node-versions@^12.1.0:
+  version "12.1.0"
+  resolved "https://registry.npmmirror.com/all-node-versions/-/all-node-versions-12.1.0.tgz#8f5b985b3698a1fa1cd5ffe3d422f5c8d70cea5e"
+  integrity sha512-hwU1w+FffajIIU1WeCVf8zxNw5kybwsK5vHmYQNgf5DvSu7fy/gGYVXJnlwvXMGZ3nFVMnztpUO1S1MHYJBeIQ==
   dependencies:
-    fetch-node-website "^9.0.0"
+    fetch-node-website "^8.1.0"
     filter-obj "^5.1.0"
-    global-cache-dir "^6.0.0"
+    global-cache-dir "^5.0.0"
     is-plain-obj "^4.1.0"
     path-exists "^5.0.0"
     semver "^7.5.4"
@@ -958,7 +958,7 @@ cacheable-request@^10.2.8:
     normalize-url "^8.0.0"
     responselike "^3.0.0"
 
-cachedir@^2.4.0:
+cachedir@^2.3.0:
   version "2.4.0"
   resolved "https://registry.npmmirror.com/cachedir/-/cachedir-2.4.0.tgz#7fef9cf7367233d7c88068fe6e34ed0d355a610d"
   integrity sha512-9EtFOZR8g22CL7BWjJ9BUx1+A/djkofnyW3aOXZORNW2kxoUpx2h+uN2cOqwPmFhnpVmxg+KW2OjOSgChTEvsQ==
@@ -1000,7 +1000,7 @@ chalk@^4.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-chalk@^5.3.0:
+chalk@^5.2.0:
   version "5.3.0"
   resolved "https://registry.npmmirror.com/chalk/-/chalk-5.3.0.tgz#67c20a7ebef70e7f3970a01f90fa210cb6860385"
   integrity sha512-dLitG79d+GV1Nb/VYcCDFivJeK1hiukt9QjRNVOsUtTy1rR1YJsmpGGTZ3qJos+uw7WmWF4wUwBd9jxjocFC2w==
@@ -1070,12 +1070,12 @@ color-name@~1.1.4:
   resolved "https://registry.npmmirror.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
-colors-option@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.npmmirror.com/colors-option/-/colors-option-6.0.0.tgz#90d828fd18ad908573149bed8065f7f2be1f5cf1"
-  integrity sha512-HBOITH+ixtQMY0D0mFLkHHbSlYdoN9KGu8vS6bLSYkaJm/bb6JbCNWdHKw71jhYNNf2IVlIe9K0TdACq+8Ztrw==
+colors-option@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npmmirror.com/colors-option/-/colors-option-5.0.0.tgz#e9fe13b5783bf22354ab954a04b9631558de2b66"
+  integrity sha512-tlLwb40JtYBb/KmJBz72l1tLKYGhuj2/lHKbHceRrCnLtvvmdiZwliiCNrIS3gpvUKnWkUyk/Q0OqmMKkyF7fA==
   dependencies:
-    chalk "^5.3.0"
+    chalk "^5.2.0"
     is-plain-obj "^4.1.0"
 
 combined-stream@^1.0.8:
@@ -1261,13 +1261,13 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
-fetch-node-website@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.npmmirror.com/fetch-node-website/-/fetch-node-website-9.0.0.tgz#b8c570c5b52d78fba4e98d1ae181f8b6f6c730fe"
-  integrity sha512-55q4PFH+9le4Y71DOQJpvi98tOvkELX3X0IjsSj48pnsi4wQFWS3xs7hSnMu+aGYFP9JhMOyn0m6dfE1r5GgSw==
+fetch-node-website@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.npmmirror.com/fetch-node-website/-/fetch-node-website-8.1.0.tgz#fc300d8beef3ee5bc6e50f92f323e31fc641a9d9"
+  integrity sha512-B9TW/6gu+I9wIPv1FCdfzhbcu6k6L/0L3EqJxa75tLQvZJNK/XZteNaItqvskcRQmK4z0TtIv29qh9yr1/UFcA==
   dependencies:
     cli-progress "^3.12.0"
-    colors-option "^6.0.0"
+    colors-option "^5.0.0"
     figures "^5.0.0"
     got "^13.0.0"
     is-plain-obj "^4.1.0"
@@ -1362,12 +1362,12 @@ get-stream@^6.0.0, get-stream@^6.0.1:
   resolved "https://registry.npmmirror.com/get-stream/-/get-stream-6.0.1.tgz#a262d8eef67aced57c2852ad6167526a43cbf7b7"
   integrity sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==
 
-gitea-tool-cache-version-alias@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.npmmirror.com/gitea-tool-cache-version-alias/-/gitea-tool-cache-version-alias-0.0.1.tgz#8ba738f65f14b2dd31cc2448bd92612b067e6622"
-  integrity sha512-3cm/Ns28BXeC0RmC0pp7ebiDrsfzAWxXm2wYQjhNI5NBRoDllrmIvgAOCpzEgul86cNL4M2Ic5kg/CkJ/trneA==
+gitea-tool-cache-version-alias@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.npmmirror.com/gitea-tool-cache-version-alias/-/gitea-tool-cache-version-alias-0.0.2.tgz#b0c1322550a9800a4b1482662a02dd27a864c631"
+  integrity sha512-msJenw8LYJ9ySTXxROIcUPXf8QCFSMfxL7ifYSuG84ltLy5YrRUuNE9a2VIx/uZRi/EfAkFm/IkbC9HEjEHHZA==
   dependencies:
-    node-version-alias "^5.0.0"
+    node-version-alias "^4"
 
 glob@^10.3.7:
   version "10.3.10"
@@ -1392,12 +1392,12 @@ glob@^7.1.3, glob@^7.1.4:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-global-cache-dir@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.npmmirror.com/global-cache-dir/-/global-cache-dir-6.0.0.tgz#de55fc57bcd2ed17dff79d6efc49dc56c98e355b"
-  integrity sha512-UOwXU6ulg3VQsSyKf0QAVcW4EFq3hFehFHV/ne76iQ9FAw4ZpXHXsmw8AwUueGI13y4apVML/Pb+njilLn/RCw==
+global-cache-dir@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npmmirror.com/global-cache-dir/-/global-cache-dir-5.0.0.tgz#3464c1b8de76d1655167afd6e73659b499fbde01"
+  integrity sha512-fO/83a6mkwCjM6MkxAHUUV5zcrRSymk4fr9JcEcsvH1cait+rV3G6T6II51beLIw3vRLwPxaC3xgh1GOWBpOuw==
   dependencies:
-    cachedir "^2.4.0"
+    cachedir "^2.3.0"
     path-exists "^5.0.0"
 
 globals@^11.1.0:
@@ -2149,24 +2149,24 @@ node-releases@^2.0.14:
   resolved "https://registry.npmmirror.com/node-releases/-/node-releases-2.0.14.tgz#2ffb053bceb8b2be8495ece1ab6ce600c4461b0b"
   integrity sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==
 
-node-version-alias@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.npmmirror.com/node-version-alias/-/node-version-alias-5.0.0.tgz#123da5552dfbe22a3f137f67e6adc61731b3a8f5"
-  integrity sha512-mFI5Yo8ApCP9NsKJ1sFa/GU3RoNqqWlwOsFwibZiuFgNivM6kCk5FrCVZajDm+MSFS/FNODROZws+52JutIdUA==
+node-version-alias@^4:
+  version "4.1.0"
+  resolved "https://registry.npmmirror.com/node-version-alias/-/node-version-alias-4.1.0.tgz#6aa31a2b00769d963212e07280de1a4c518e7bc3"
+  integrity sha512-UsG9JUJrbUvJoEzc0OWdqCEjQ5m/2fsv3KneusvF2w1d89fgVH8WuoM2BB5oGDAPn569qqx9CAcJ7wpcdfE6bw==
   dependencies:
-    all-node-versions "^13.0.0"
+    all-node-versions "^12.1.0"
     filter-obj "^5.1.0"
     is-plain-obj "^4.1.0"
-    normalize-node-version "^14.0.0"
+    normalize-node-version "^13.1.0"
     path-exists "^5.0.0"
     semver "^7.5.4"
 
-normalize-node-version@^14.0.0:
-  version "14.0.0"
-  resolved "https://registry.npmmirror.com/normalize-node-version/-/normalize-node-version-14.0.0.tgz#5a63188f52df20f7e117fa61d5d968cc6460efeb"
-  integrity sha512-Tm8aM4xVs0RJad7U/uSAAfpEX6eRLT13hEcWLiFmIlgfWcelALnSiiDql3PH8v3LRtJ1O46zBgXa4Rh5bK9KOA==
+normalize-node-version@^13.1.0:
+  version "13.1.0"
+  resolved "https://registry.npmmirror.com/normalize-node-version/-/normalize-node-version-13.1.0.tgz#f021a29665ee01dd485d41c4c2d2625b1e26ff35"
+  integrity sha512-SoiAvmzuaj4oqi/Rqr4AfjxxKJGRCq5yM78WLlO17muvmM8EIBMGiynTBbEcnzPFf84g78J/VvC712oSVc7zJg==
   dependencies:
-    all-node-versions "^13.0.0"
+    all-node-versions "^12.1.0"
     filter-obj "^5.1.0"
     semver "^7.5.4"
 

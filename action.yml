@@ -17,5 +17,5 @@ outputs:
   node-version:
     description: 'The version of node being used'
 runs:
-  using: 'node20'
+  using: 'node16'
   main: 'dist/index.js'
