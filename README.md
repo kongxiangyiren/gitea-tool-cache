@@ -16,7 +16,7 @@ See [action.yml](action.yml)
 
 ```yaml
 - id: tool-cache
- uses: kongxiangyiren/gitea-tool-cache@v2
+  uses: kongxiangyiren/gitea-tool-cache@v2
   with:
     # go 和 dotnet 需要指定具体版本号
     node-version: 18
