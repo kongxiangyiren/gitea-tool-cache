@@ -49633,7 +49633,6 @@ const tool_cache_1 = __nccwpck_require__(7784);
 const core_1 = __nccwpck_require__(2186);
 const os_1 = __nccwpck_require__(2037);
 const fs_1 = __nccwpck_require__(7147);
-// @ts-expect-error
 const gitea_tool_cache_version_alias_1 = __nccwpck_require__(7008);
 // 安装node
 async function nodeInstall() {

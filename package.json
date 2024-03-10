@@ -21,6 +21,6 @@
   "dependencies": {
     "@actions/tool-cache": "^2.0.1",
     "axios": "^1.6.7",
-    "gitea-tool-cache-version-alias": "^0.0.2"
+    "gitea-tool-cache-version-alias": "^0.0.3"
   }
 }

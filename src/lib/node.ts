@@ -3,7 +3,6 @@ import { downloadTool, extractZip, extractTar, extractXar, cacheDir } from '@act
 import { addPath, getInput, setOutput } from '@actions/core';
 import { arch, platform as Platform } from 'os';
 import { existsSync, renameSync } from 'fs';
-// @ts-expect-error
 import { nodeVersionAlias } from 'gitea-tool-cache-version-alias';
 
 // 安装node
