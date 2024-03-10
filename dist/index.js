@@ -49480,30 +49480,28 @@ async function dotnetInstall() {
     const platform = (0, os_1.platform)();
     const dotnetVersion = (0, core_1.getInput)('dotnet-version');
     if (!dotnetVersion) {
-        console.log('没有dotnet-version,跳过dotnet安装');
+        (0, core_1.info)('没有dotnet-version,跳过dotnet安装');
         return;
     }
     if (process.env['RUNNER_TOOL_CACHE'] &&
         (0, fs_1.existsSync)((0, path_1.join)(process.env['RUNNER_TOOL_CACHE'], 'dotnet', dotnetVersion, (0, os_1.arch)()))) {
-        console.log('dotnet已经安装过了');
+        (0, core_1.info)('dotnet已经安装过了');
         return (0, core_1.setOutput)('dotnet-path', (0, path_1.join)(process.env['RUNNER_TOOL_CACHE'], 'dotnet', dotnetVersion, (0, os_1.arch)()));
     }
     const versionList = dotnetVersion.split('.');
     const channelVersion = `${versionList[0]}.${versionList[1]}`;
     const releasesUrl = `https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/${channelVersion}/releases.json`;
     const releases = await (0, axios_1.get)(releasesUrl).catch(err => {
-        console.log(err);
+        (0, core_1.error)(err);
         return null;
     });
     if (!releases || !releases.data) {
-        console.log('获取dotnet版本失败');
-        return false;
+        return (0, core_1.setFailed)('获取dotnet版本失败');
     }
     const releasesList = releases.data.releases;
     const release = releasesList.find((item) => item.sdk.version === dotnetVersion);
     if (!release) {
-        console.log('没有找到dotnet版本');
-        return false;
+        return (0, core_1.setFailed)('没有找到dotnet版本');
     }
     const list = release.sdk.files.find((item) => {
         if (platform === 'win32') {
@@ -49517,27 +49515,30 @@ async function dotnetInstall() {
         }
     });
     if (!list) {
-        console.log('没有找到dotnet版本');
-        return false;
+        return (0, core_1.setFailed)('没有找到dotnet版本');
     }
-    //   console.log(list);
-    console.log(list.url);
-    const dotnetPath = await (0, tool_cache_1.downloadTool)(list.url);
-    if (platform === 'win32') {
-        (0, fs_1.renameSync)(dotnetPath, dotnetPath + '.zip');
-        const dotnetExtractedFolder = await (0, tool_cache_1.extractZip)(dotnetPath + '.zip', './cache/dotnet');
-        const cachedPath = await (0, tool_cache_1.cacheDir)(dotnetExtractedFolder, 'dotnet', dotnetVersion);
-        (0, core_1.addPath)(cachedPath);
-        (0, core_1.setOutput)('dotnet-path', cachedPath);
+    (0, core_1.info)(list.url);
+    try {
+        const dotnetPath = await (0, tool_cache_1.downloadTool)(list.url);
+        if (platform === 'win32') {
+            (0, fs_1.renameSync)(dotnetPath, dotnetPath + '.zip');
+            const dotnetExtractedFolder = await (0, tool_cache_1.extractZip)(dotnetPath + '.zip', './cache/dotnet');
+            const cachedPath = await (0, tool_cache_1.cacheDir)(dotnetExtractedFolder, 'dotnet', dotnetVersion);
+            (0, core_1.addPath)(cachedPath);
+            (0, core_1.setOutput)('dotnet-path', cachedPath);
+        }
+        else if (platform === 'darwin') {
+            (0, core_1.info)('没有mac,暂未测试');
+        }
+        else {
+            const dotnetExtractedFolder = await (0, tool_cache_1.extractTar)(dotnetPath, './cache/dotnet');
+            const cachedPath = await (0, tool_cache_1.cacheDir)(dotnetExtractedFolder, 'dotnet', dotnetVersion);
+            (0, core_1.addPath)(cachedPath);
+            (0, core_1.setOutput)('dotnet-path', cachedPath);
+        }
     }
-    else if (platform === 'darwin') {
-        console.log('没有mac,暂未测试');
-    }
-    else {
-        const dotnetExtractedFolder = await (0, tool_cache_1.extractTar)(dotnetPath, './cache/dotnet');
-        const cachedPath = await (0, tool_cache_1.cacheDir)(dotnetExtractedFolder, 'dotnet', dotnetVersion);
-        (0, core_1.addPath)(cachedPath);
-        (0, core_1.setOutput)('dotnet-path', cachedPath);
+    catch (error) {
+        (0, core_1.setFailed)(JSON.stringify(error));
     }
 }
 exports.dotnetInstall = dotnetInstall;
@@ -49562,31 +49563,36 @@ async function goInstall() {
     const platform = (0, os_1.platform)();
     const goVersion = (0, core_1.getInput)('go-version');
     if (!goVersion) {
-        console.log('没有go-version,跳过go安装');
+        (0, core_1.info)('没有go-version,跳过go安装');
         return;
     }
     if (process.env['RUNNER_TOOL_CACHE'] &&
         (0, fs_1.existsSync)((0, path_1.join)(process.env['RUNNER_TOOL_CACHE'], 'go', goVersion, (0, os_1.arch)()))) {
-        console.log('go已经安装过了');
+        (0, core_1.info)('go已经安装过了');
         return;
     }
-    if (platform === 'win32') {
-        console.log(`https://golang.google.cn/dl/go${goVersion}.windows-amd64.zip`);
-        const goPath = await (0, tool_cache_1.downloadTool)(`https://golang.google.cn/dl/go${goVersion}.windows-amd64.zip`);
-        (0, fs_1.renameSync)(goPath, goPath + '.zip');
-        const goExtractedFolder = await (0, tool_cache_1.extractZip)(goPath + '.zip', './cache/go');
-        const cachedPath = await (0, tool_cache_1.cacheDir)((0, path_1.join)(goExtractedFolder, 'go'), 'go', goVersion);
-        (0, core_1.addPath)(cachedPath);
+    try {
+        if (platform === 'win32') {
+            (0, core_1.info)(`https://golang.google.cn/dl/go${goVersion}.windows-amd64.zip`);
+            const goPath = await (0, tool_cache_1.downloadTool)(`https://golang.google.cn/dl/go${goVersion}.windows-amd64.zip`);
+            (0, fs_1.renameSync)(goPath, goPath + '.zip');
+            const goExtractedFolder = await (0, tool_cache_1.extractZip)(goPath + '.zip', './cache/go');
+            const cachedPath = await (0, tool_cache_1.cacheDir)((0, path_1.join)(goExtractedFolder, 'go'), 'go', goVersion);
+            (0, core_1.addPath)(cachedPath);
+        }
+        else if (platform === 'darwin') {
+            (0, core_1.info)('没有mac,暂未测试');
+        }
+        else {
+            (0, core_1.info)(`https://golang.google.cn/dl/go${goVersion}.linux-amd64.tar.gz`);
+            const goPath = await (0, tool_cache_1.downloadTool)(`https://golang.google.cn/dl/go${goVersion}.linux-amd64.tar.gz`);
+            const goExtractedFolder = await (0, tool_cache_1.extractTar)(goPath, './cache/go');
+            const cachedPath = await (0, tool_cache_1.cacheDir)((0, path_1.join)(goExtractedFolder, 'go'), 'go', goVersion);
+            (0, core_1.addPath)(cachedPath);
+        }
     }
-    else if (platform === 'darwin') {
-        console.log('没有mac,暂未测试');
-    }
-    else {
-        console.log(`https://golang.google.cn/dl/go${goVersion}.linux-amd64.tar.gz`);
-        const goPath = await (0, tool_cache_1.downloadTool)(`https://golang.google.cn/dl/go${goVersion}.linux-amd64.tar.gz`);
-        const goExtractedFolder = await (0, tool_cache_1.extractTar)(goPath, './cache/go');
-        const cachedPath = await (0, tool_cache_1.cacheDir)((0, path_1.join)(goExtractedFolder, 'go'), 'go', goVersion);
-        (0, core_1.addPath)(cachedPath);
+    catch (error) {
+        (0, core_1.setFailed)(JSON.stringify(error));
     }
 }
 exports.goInstall = goInstall;
@@ -49639,44 +49645,50 @@ async function nodeInstall() {
     const platform = (0, os_1.platform)();
     const nodeVersion = (0, core_1.getInput)('node-version');
     if (!nodeVersion) {
-        console.log('没有node-version,跳过node安装');
+        (0, core_1.info)('没有node-version,跳过node安装');
         return;
     }
     const version = await (0, gitea_tool_cache_version_alias_1.nodeVersionAlias)(nodeVersion, {
         mirror: 'https://npmmirror.com/mirrors/node'
     }).catch(err => err);
     if (version instanceof Error) {
-        console.log('node版本错误', version);
+        // console.error('node版本错误', version);
+        (0, core_1.setFailed)('node版本错误: ' + version);
         return;
     }
     if (process.env['RUNNER_TOOL_CACHE'] &&
         (0, fs_1.existsSync)((0, path_1.join)(process.env['RUNNER_TOOL_CACHE'], 'node', version, (0, os_1.arch)()))) {
-        console.log('node已经安装过了');
+        (0, core_1.info)('node已经安装过了');
         return (0, core_1.setOutput)('node-version', version);
     }
-    if (platform === 'win32') {
-        console.log(`https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-win-${(0, os_1.arch)()}.zip`);
-        const nodePath = await (0, tool_cache_1.downloadTool)(`https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-win-${(0, os_1.arch)()}.zip`);
-        (0, fs_1.renameSync)(nodePath, nodePath + '.zip');
-        const nodeExtractedFolder = await (0, tool_cache_1.extractZip)(nodePath + '.zip', './cache/node');
-        const cachedPath = await (0, tool_cache_1.cacheDir)((0, path_1.join)(nodeExtractedFolder, `node-v${version}-win-${(0, os_1.arch)()}`), 'node', version);
-        (0, core_1.addPath)(cachedPath);
-        (0, core_1.setOutput)('node-version', version);
+    try {
+        if (platform === 'win32') {
+            (0, core_1.info)(`https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-win-${(0, os_1.arch)()}.zip`);
+            const nodePath = await (0, tool_cache_1.downloadTool)(`https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-win-${(0, os_1.arch)()}.zip`);
+            (0, fs_1.renameSync)(nodePath, nodePath + '.zip');
+            const nodeExtractedFolder = await (0, tool_cache_1.extractZip)(nodePath + '.zip', './cache/node');
+            const cachedPath = await (0, tool_cache_1.cacheDir)((0, path_1.join)(nodeExtractedFolder, `node-v${version}-win-${(0, os_1.arch)()}`), 'node', version);
+            (0, core_1.addPath)(cachedPath);
+            (0, core_1.setOutput)('node-version', version);
+        }
+        else if (platform === 'darwin') {
+            (0, core_1.info)('没有mac,暂未测试');
+            // const nodePath = await downloadTool(
+            //   `https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}.pkg`
+            // );
+            // const nodeExtractedFolder = await extractXar(nodePath, './cache/node');
+        }
+        else {
+            (0, core_1.info)(`https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-linux-${(0, os_1.arch)()}.tar.gz`);
+            const nodePath = await (0, tool_cache_1.downloadTool)(`https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-linux-${(0, os_1.arch)()}.tar.gz`);
+            const nodeExtractedFolder = await (0, tool_cache_1.extractTar)(nodePath, './cache/node');
+            const cachedPath = await (0, tool_cache_1.cacheDir)((0, path_1.join)(nodeExtractedFolder, `node-v${version}-linux-${(0, os_1.arch)()}`), 'node', version);
+            (0, core_1.addPath)(cachedPath);
+            (0, core_1.setOutput)('node-version', version);
+        }
     }
-    else if (platform === 'darwin') {
-        console.log('没有mac,暂未测试');
-        // const nodePath = await downloadTool(
-        //   `https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}.pkg`
-        // );
-        // const nodeExtractedFolder = await extractXar(nodePath, './cache/node');
-    }
-    else {
-        console.log(`https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-linux-${(0, os_1.arch)()}.tar.gz`);
-        const nodePath = await (0, tool_cache_1.downloadTool)(`https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-linux-${(0, os_1.arch)()}.tar.gz`);
-        const nodeExtractedFolder = await (0, tool_cache_1.extractTar)(nodePath, './cache/node');
-        const cachedPath = await (0, tool_cache_1.cacheDir)((0, path_1.join)(nodeExtractedFolder, `node-v${version}-linux-${(0, os_1.arch)()}`), 'node', version);
-        (0, core_1.addPath)(cachedPath);
-        (0, core_1.setOutput)('node-version', version);
+    catch (error) {
+        (0, core_1.setFailed)(JSON.stringify(error));
     }
 }
 exports.nodeInstall = nodeInstall;

@@ -11,6 +11,7 @@ describe('gitea-tool-cache', () => {
   let inSpy: jest.SpyInstance;
   let platSpy: jest.SpyInstance;
   let archSpy: jest.SpyInstance;
+  let logSpy: jest.SpyInstance;
 
   beforeAll(() => {
     process.env['RUNNER_TOOL_CACHE'] = join(process.cwd(), './cache/toolcache');
@@ -30,6 +31,9 @@ describe('gitea-tool-cache', () => {
     platSpy.mockImplementation(() => os['platform']);
     archSpy = jest.spyOn(osm, 'arch');
     archSpy.mockImplementation(() => os['arch']);
+
+    // writes
+    logSpy = jest.spyOn(core, 'info');
   });
 
   afterEach(() => {
@@ -59,9 +63,10 @@ describe('gitea-tool-cache', () => {
   // });
 
   it('installs linux', async () => {
+    rmSync('./cache', { recursive: true, force: true });
     os['platform'] = 'linux';
     os['arch'] = 'x64';
-    inputs['node-version'] = '18 ';
+    inputs['node-version'] = '18';
     await nodeInstall();
     // inputs['go-version'] = '1.21.1';
     // await goInstall();

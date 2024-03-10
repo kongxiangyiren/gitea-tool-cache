@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { downloadTool, extractZip, extractTar, extractXar, cacheDir } from '@actions/tool-cache';
-import { addPath, getInput, setOutput } from '@actions/core';
+import { addPath, getInput, setOutput, info, setFailed, error } from '@actions/core';
 import { arch, platform as Platform } from 'os';
 import { existsSync, renameSync } from 'fs';
 import { get } from 'axios';
@@ -10,7 +10,7 @@ export async function dotnetInstall() {
   const platform = Platform();
   const dotnetVersion = getInput('dotnet-version');
   if (!dotnetVersion) {
-    console.log('没有dotnet-version,跳过dotnet安装');
+    info('没有dotnet-version,跳过dotnet安装');
     return;
   }
 
@@ -18,7 +18,7 @@ export async function dotnetInstall() {
     process.env['RUNNER_TOOL_CACHE'] &&
     existsSync(join(process.env['RUNNER_TOOL_CACHE'], 'dotnet', dotnetVersion, arch()))
   ) {
-    console.log('dotnet已经安装过了');
+    info('dotnet已经安装过了');
     return setOutput(
       'dotnet-path',
       join(process.env['RUNNER_TOOL_CACHE'], 'dotnet', dotnetVersion, arch())
@@ -28,21 +28,19 @@ export async function dotnetInstall() {
   const channelVersion = `${versionList[0]}.${versionList[1]}`;
   const releasesUrl = `https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/${channelVersion}/releases.json`;
   const releases = await get(releasesUrl).catch(err => {
-    console.log(err);
+    error(err);
     return null;
   });
 
   if (!releases || !releases.data) {
-    console.log('获取dotnet版本失败');
-    return false;
+    return setFailed('获取dotnet版本失败');
   }
   const releasesList = (releases.data as Record<string, any>).releases;
   const release = releasesList.find(
     (item: Record<string, any>) => item.sdk.version === dotnetVersion
   );
   if (!release) {
-    console.log('没有找到dotnet版本');
-    return false;
+    return setFailed('没有找到dotnet版本');
   }
 
   const list = release.sdk.files.find((item: Record<string, any>) => {
@@ -55,26 +53,28 @@ export async function dotnetInstall() {
     }
   });
   if (!list) {
-    console.log('没有找到dotnet版本');
-    return false;
+    return setFailed('没有找到dotnet版本');
   }
-  //   console.log(list);
 
-  console.log(list.url);
+  info(list.url);
 
-  const dotnetPath = await downloadTool(list.url);
-  if (platform === 'win32') {
-    renameSync(dotnetPath, dotnetPath + '.zip');
-    const dotnetExtractedFolder = await extractZip(dotnetPath + '.zip', './cache/dotnet');
-    const cachedPath = await cacheDir(dotnetExtractedFolder, 'dotnet', dotnetVersion);
-    addPath(cachedPath);
-    setOutput('dotnet-path', cachedPath);
-  } else if (platform === 'darwin') {
-    console.log('没有mac,暂未测试');
-  } else {
-    const dotnetExtractedFolder = await extractTar(dotnetPath, './cache/dotnet');
-    const cachedPath = await cacheDir(dotnetExtractedFolder, 'dotnet', dotnetVersion);
-    addPath(cachedPath);
-    setOutput('dotnet-path', cachedPath);
+  try {
+    const dotnetPath = await downloadTool(list.url);
+    if (platform === 'win32') {
+      renameSync(dotnetPath, dotnetPath + '.zip');
+      const dotnetExtractedFolder = await extractZip(dotnetPath + '.zip', './cache/dotnet');
+      const cachedPath = await cacheDir(dotnetExtractedFolder, 'dotnet', dotnetVersion);
+      addPath(cachedPath);
+      setOutput('dotnet-path', cachedPath);
+    } else if (platform === 'darwin') {
+      info('没有mac,暂未测试');
+    } else {
+      const dotnetExtractedFolder = await extractTar(dotnetPath, './cache/dotnet');
+      const cachedPath = await cacheDir(dotnetExtractedFolder, 'dotnet', dotnetVersion);
+      addPath(cachedPath);
+      setOutput('dotnet-path', cachedPath);
+    }
+  } catch (error) {
+    setFailed(JSON.stringify(error));
   }
 }
