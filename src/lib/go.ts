@@ -1,8 +1,15 @@
 import { join } from 'path';
-import { downloadTool, extractZip, extractTar, extractXar, cacheDir } from '@actions/tool-cache';
+import {
+  downloadTool,
+  extractZip,
+  extractTar,
+  extractXar,
+  cacheDir,
+  find
+} from '@actions/tool-cache';
 import { addPath, getInput, info, setFailed } from '@actions/core';
 import { arch, platform as Platform } from 'os';
-import { existsSync, renameSync } from 'fs';
+import { renameSync } from 'fs';
 
 // 安装golang
 export async function goInstall() {
@@ -12,12 +19,11 @@ export async function goInstall() {
     info('没有go-version,跳过go安装');
     return;
   }
-  if (
-    process.env['RUNNER_TOOL_CACHE'] &&
-    existsSync(join(process.env['RUNNER_TOOL_CACHE'], 'go', goVersion, arch()))
-  ) {
-    info('go已经安装过了');
 
+  const goPath = find('go', goVersion, arch());
+
+  if (goPath) {
+    info('go已经安装过了');
     return;
   }
 

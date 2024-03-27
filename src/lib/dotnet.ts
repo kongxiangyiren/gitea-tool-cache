@@ -1,8 +1,14 @@
-import { join } from 'path';
-import { downloadTool, extractZip, extractTar, extractXar, cacheDir } from '@actions/tool-cache';
+import {
+  downloadTool,
+  extractZip,
+  extractTar,
+  extractXar,
+  cacheDir,
+  find
+} from '@actions/tool-cache';
 import { addPath, getInput, setOutput, info, setFailed, error } from '@actions/core';
 import { arch, platform as Platform } from 'os';
-import { existsSync, renameSync } from 'fs';
+import { renameSync } from 'fs';
 import { get } from 'axios';
 
 // 安装dotnet
@@ -14,15 +20,11 @@ export async function dotnetInstall() {
     return;
   }
 
-  if (
-    process.env['RUNNER_TOOL_CACHE'] &&
-    existsSync(join(process.env['RUNNER_TOOL_CACHE'], 'dotnet', dotnetVersion, arch()))
-  ) {
+  const dotnetPath = find('dotnet', dotnetVersion, arch());
+
+  if (dotnetPath) {
     info('dotnet已经安装过了');
-    return setOutput(
-      'dotnet-path',
-      join(process.env['RUNNER_TOOL_CACHE'], 'dotnet', dotnetVersion, arch())
-    );
+    return setOutput('dotnet-path', dotnetPath);
   }
   const versionList = dotnetVersion.split('.');
   const channelVersion = `${versionList[0]}.${versionList[1]}`;

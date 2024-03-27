@@ -1,8 +1,15 @@
 import { join } from 'path';
-import { downloadTool, extractZip, extractTar, extractXar, cacheDir } from '@actions/tool-cache';
+import {
+  downloadTool,
+  extractZip,
+  extractTar,
+  extractXar,
+  cacheDir,
+  find
+} from '@actions/tool-cache';
 import { addPath, getInput, setOutput, setFailed, info } from '@actions/core';
 import { arch, platform as Platform } from 'os';
-import { existsSync, renameSync } from 'fs';
+import { renameSync } from 'fs';
 import { nodeVersionAlias } from 'gitea-tool-cache-version-alias';
 
 // 安装node
@@ -22,11 +29,9 @@ export async function nodeInstall() {
     setFailed('node版本错误: ' + version);
     return;
   }
+  const NodePath = find('node', version, arch());
 
-  if (
-    process.env['RUNNER_TOOL_CACHE'] &&
-    existsSync(join(process.env['RUNNER_TOOL_CACHE'], 'node', version, arch()))
-  ) {
+  if (NodePath) {
     info('node已经安装过了');
 
     return setOutput('node-version', version);
