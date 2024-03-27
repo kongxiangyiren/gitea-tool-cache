@@ -49469,7 +49469,6 @@ module.exports = v4;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.dotnetInstall = void 0;
-const path_1 = __nccwpck_require__(1017);
 const tool_cache_1 = __nccwpck_require__(7784);
 const core_1 = __nccwpck_require__(2186);
 const os_1 = __nccwpck_require__(2037);
@@ -49483,10 +49482,10 @@ async function dotnetInstall() {
         (0, core_1.info)('没有dotnet-version,跳过dotnet安装');
         return;
     }
-    if (process.env['RUNNER_TOOL_CACHE'] &&
-        (0, fs_1.existsSync)((0, path_1.join)(process.env['RUNNER_TOOL_CACHE'], 'dotnet', dotnetVersion, (0, os_1.arch)()))) {
+    const dotnetPath = (0, tool_cache_1.find)('dotnet', dotnetVersion, (0, os_1.arch)());
+    if (dotnetPath) {
         (0, core_1.info)('dotnet已经安装过了');
-        return (0, core_1.setOutput)('dotnet-path', (0, path_1.join)(process.env['RUNNER_TOOL_CACHE'], 'dotnet', dotnetVersion, (0, os_1.arch)()));
+        return (0, core_1.setOutput)('dotnet-path', dotnetPath);
     }
     const versionList = dotnetVersion.split('.');
     const channelVersion = `${versionList[0]}.${versionList[1]}`;
@@ -49566,8 +49565,8 @@ async function goInstall() {
         (0, core_1.info)('没有go-version,跳过go安装');
         return;
     }
-    if (process.env['RUNNER_TOOL_CACHE'] &&
-        (0, fs_1.existsSync)((0, path_1.join)(process.env['RUNNER_TOOL_CACHE'], 'go', goVersion, (0, os_1.arch)()))) {
+    const goPath = (0, tool_cache_1.find)('go', goVersion, (0, os_1.arch)());
+    if (goPath) {
         (0, core_1.info)('go已经安装过了');
         return;
     }
@@ -49656,8 +49655,8 @@ async function nodeInstall() {
         (0, core_1.setFailed)('node版本错误: ' + version);
         return;
     }
-    if (process.env['RUNNER_TOOL_CACHE'] &&
-        (0, fs_1.existsSync)((0, path_1.join)(process.env['RUNNER_TOOL_CACHE'], 'node', version, (0, os_1.arch)()))) {
+    const NodePath = (0, tool_cache_1.find)('node', version, (0, os_1.arch)());
+    if (NodePath) {
         (0, core_1.info)('node已经安装过了');
         return (0, core_1.setOutput)('node-version', version);
     }
