@@ -49507,7 +49507,7 @@ async function dotnetInstall() {
             return item.rid === 'win-' + (0, os_1.arch)() && item.url.endsWith('.zip');
         }
         else if (platform === 'darwin') {
-            return item.rid === 'osx-' + (0, os_1.arch)() && item.url.endsWith('.pkg');
+            return item.rid === 'osx-' + (0, os_1.arch)() && item.url.endsWith('.tar.gz');
         }
         else {
             return item.rid === 'linux-' + (0, os_1.arch)() && item.url.endsWith('.tar.gz');
@@ -49527,7 +49527,10 @@ async function dotnetInstall() {
             (0, core_1.setOutput)('dotnet-path', cachedPath);
         }
         else if (platform === 'darwin') {
-            (0, core_1.info)('没有mac,暂未测试');
+            const dotnetExtractedFolder = await (0, tool_cache_1.extractTar)(dotnetPath, './cache/dotnet');
+            const cachedPath = await (0, tool_cache_1.cacheDir)(dotnetExtractedFolder, 'dotnet', dotnetVersion);
+            (0, core_1.addPath)(cachedPath);
+            (0, core_1.setOutput)('dotnet-path', cachedPath);
         }
         else {
             const dotnetExtractedFolder = await (0, tool_cache_1.extractTar)(dotnetPath, './cache/dotnet');
@@ -49570,21 +49573,26 @@ async function goInstall() {
         (0, core_1.info)('go已经安装过了');
         return;
     }
+    const archD = (0, os_1.arch)() === 'x64' ? 'amd64' : (0, os_1.arch)();
     try {
         if (platform === 'win32') {
-            (0, core_1.info)(`https://golang.google.cn/dl/go${goVersion}.windows-amd64.zip`);
-            const goPath = await (0, tool_cache_1.downloadTool)(`https://golang.google.cn/dl/go${goVersion}.windows-amd64.zip`);
+            (0, core_1.info)(`https://golang.google.cn/dl/go${goVersion}.windows-${archD}.zip`);
+            const goPath = await (0, tool_cache_1.downloadTool)(`https://golang.google.cn/dl/go${goVersion}.windows-${archD}.zip`);
             (0, fs_1.renameSync)(goPath, goPath + '.zip');
             const goExtractedFolder = await (0, tool_cache_1.extractZip)(goPath + '.zip', './cache/go');
             const cachedPath = await (0, tool_cache_1.cacheDir)((0, path_1.join)(goExtractedFolder, 'go'), 'go', goVersion);
             (0, core_1.addPath)(cachedPath);
         }
         else if (platform === 'darwin') {
-            (0, core_1.info)('没有mac,暂未测试');
+            (0, core_1.info)(`https://golang.google.cn/dl/go${goVersion}.darwin-${archD}.tar.gz`);
+            const goPath = await (0, tool_cache_1.downloadTool)(`https://golang.google.cn/dl/go${goVersion}.darwin-${archD}.tar.gz`);
+            const goExtractedFolder = await (0, tool_cache_1.extractTar)(goPath, './cache/go');
+            const cachedPath = await (0, tool_cache_1.cacheDir)((0, path_1.join)(goExtractedFolder, 'go'), 'go', goVersion);
+            (0, core_1.addPath)(cachedPath);
         }
         else {
-            (0, core_1.info)(`https://golang.google.cn/dl/go${goVersion}.linux-amd64.tar.gz`);
-            const goPath = await (0, tool_cache_1.downloadTool)(`https://golang.google.cn/dl/go${goVersion}.linux-amd64.tar.gz`);
+            (0, core_1.info)(`https://golang.google.cn/dl/go${goVersion}.linux-${archD}.tar.gz`);
+            const goPath = await (0, tool_cache_1.downloadTool)(`https://golang.google.cn/dl/go${goVersion}.linux-${archD}.tar.gz`);
             const goExtractedFolder = await (0, tool_cache_1.extractTar)(goPath, './cache/go');
             const cachedPath = await (0, tool_cache_1.cacheDir)((0, path_1.join)(goExtractedFolder, 'go'), 'go', goVersion);
             (0, core_1.addPath)(cachedPath);
@@ -49671,11 +49679,12 @@ async function nodeInstall() {
             (0, core_1.setOutput)('node-version', version);
         }
         else if (platform === 'darwin') {
-            (0, core_1.info)('没有mac,暂未测试');
-            // const nodePath = await downloadTool(
-            //   `https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}.pkg`
-            // );
-            // const nodeExtractedFolder = await extractXar(nodePath, './cache/node');
+            (0, core_1.info)(`https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-darwin-${(0, os_1.arch)()}.tar.gz`);
+            const nodePath = await (0, tool_cache_1.downloadTool)(`https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-darwin-${(0, os_1.arch)()}.tar.gz`);
+            const nodeExtractedFolder = await (0, tool_cache_1.extractTar)(nodePath, './cache/node');
+            const cachedPath = await (0, tool_cache_1.cacheDir)((0, path_1.join)(nodeExtractedFolder, `node-v${version}-darwin-${(0, os_1.arch)()}`), 'node', version);
+            (0, core_1.addPath)(cachedPath);
+            (0, core_1.setOutput)('node-version', version);
         }
         else {
             (0, core_1.info)(`https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-linux-${(0, os_1.arch)()}.tar.gz`);

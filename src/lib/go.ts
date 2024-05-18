@@ -1,12 +1,5 @@
 import { join } from 'path';
-import {
-  downloadTool,
-  extractZip,
-  extractTar,
-  extractXar,
-  cacheDir,
-  find
-} from '@actions/tool-cache';
+import { downloadTool, extractZip, extractTar, cacheDir, find } from '@actions/tool-cache';
 import { addPath, getInput, info, setFailed } from '@actions/core';
 import { arch, platform as Platform } from 'os';
 import { renameSync } from 'fs';
@@ -26,25 +19,34 @@ export async function goInstall() {
     info('go已经安装过了');
     return;
   }
+  const archD = arch() === 'x64' ? 'amd64' : arch();
 
   try {
     if (platform === 'win32') {
-      info(`https://golang.google.cn/dl/go${goVersion}.windows-amd64.zip`);
+      info(`https://golang.google.cn/dl/go${goVersion}.windows-${archD}.zip`);
 
       const goPath = await downloadTool(
-        `https://golang.google.cn/dl/go${goVersion}.windows-amd64.zip`
+        `https://golang.google.cn/dl/go${goVersion}.windows-${archD}.zip`
       );
       renameSync(goPath, goPath + '.zip');
       const goExtractedFolder = await extractZip(goPath + '.zip', './cache/go');
       const cachedPath = await cacheDir(join(goExtractedFolder, 'go'), 'go', goVersion);
       addPath(cachedPath);
     } else if (platform === 'darwin') {
-      info('没有mac,暂未测试');
-    } else {
-      info(`https://golang.google.cn/dl/go${goVersion}.linux-amd64.tar.gz`);
+      info(`https://golang.google.cn/dl/go${goVersion}.darwin-${archD}.tar.gz`);
 
       const goPath = await downloadTool(
-        `https://golang.google.cn/dl/go${goVersion}.linux-amd64.tar.gz`
+        `https://golang.google.cn/dl/go${goVersion}.darwin-${archD}.tar.gz`
+      );
+      const goExtractedFolder = await extractTar(goPath, './cache/go');
+
+      const cachedPath = await cacheDir(join(goExtractedFolder, 'go'), 'go', goVersion);
+      addPath(cachedPath);
+    } else {
+      info(`https://golang.google.cn/dl/go${goVersion}.linux-${archD}.tar.gz`);
+
+      const goPath = await downloadTool(
+        `https://golang.google.cn/dl/go${goVersion}.linux-${archD}.tar.gz`
       );
       const goExtractedFolder = await extractTar(goPath, './cache/go');
 

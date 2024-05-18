@@ -1,12 +1,5 @@
 import { join } from 'path';
-import {
-  downloadTool,
-  extractZip,
-  extractTar,
-  extractXar,
-  cacheDir,
-  find
-} from '@actions/tool-cache';
+import { downloadTool, extractZip, extractTar, cacheDir, find } from '@actions/tool-cache';
 import { addPath, getInput, setOutput, setFailed, info } from '@actions/core';
 import { arch, platform as Platform } from 'os';
 import { renameSync } from 'fs';
@@ -58,12 +51,22 @@ export async function nodeInstall() {
       addPath(cachedPath);
       setOutput('node-version', version);
     } else if (platform === 'darwin') {
-      info('没有mac,暂未测试');
+      info(
+        `https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-darwin-${arch()}.tar.gz`
+      );
 
-      // const nodePath = await downloadTool(
-      //   `https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}.pkg`
-      // );
-      // const nodeExtractedFolder = await extractXar(nodePath, './cache/node');
+      const nodePath = await downloadTool(
+        `https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-darwin-${arch()}.tar.gz`
+      );
+      const nodeExtractedFolder = await extractTar(nodePath, './cache/node');
+
+      const cachedPath = await cacheDir(
+        join(nodeExtractedFolder, `node-v${version}-darwin-${arch()}`),
+        'node',
+        version
+      );
+      addPath(cachedPath);
+      setOutput('node-version', version);
     } else {
       info(
         `https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-linux-${arch()}.tar.gz`

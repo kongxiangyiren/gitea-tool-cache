@@ -1,11 +1,4 @@
-import {
-  downloadTool,
-  extractZip,
-  extractTar,
-  extractXar,
-  cacheDir,
-  find
-} from '@actions/tool-cache';
+import { downloadTool, extractZip, extractTar, cacheDir, find } from '@actions/tool-cache';
 import { addPath, getInput, setOutput, info, setFailed, error } from '@actions/core';
 import { arch, platform as Platform } from 'os';
 import { renameSync } from 'fs';
@@ -49,7 +42,7 @@ export async function dotnetInstall() {
     if (platform === 'win32') {
       return item.rid === 'win-' + arch() && item.url.endsWith('.zip');
     } else if (platform === 'darwin') {
-      return item.rid === 'osx-' + arch() && item.url.endsWith('.pkg');
+      return item.rid === 'osx-' + arch() && item.url.endsWith('.tar.gz');
     } else {
       return item.rid === 'linux-' + arch() && item.url.endsWith('.tar.gz');
     }
@@ -69,7 +62,10 @@ export async function dotnetInstall() {
       addPath(cachedPath);
       setOutput('dotnet-path', cachedPath);
     } else if (platform === 'darwin') {
-      info('没有mac,暂未测试');
+      const dotnetExtractedFolder = await extractTar(dotnetPath, './cache/dotnet');
+      const cachedPath = await cacheDir(dotnetExtractedFolder, 'dotnet', dotnetVersion);
+      addPath(cachedPath);
+      setOutput('dotnet-path', cachedPath);
     } else {
       const dotnetExtractedFolder = await extractTar(dotnetPath, './cache/dotnet');
       const cachedPath = await cacheDir(dotnetExtractedFolder, 'dotnet', dotnetVersion);

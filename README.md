@@ -4,9 +4,7 @@
 
 1、go 和 dotnet 需要指定具体版本号
 
-2、因为我没有 mac,所以没有 mac 环境
-
-3、如果你想让 go 和 dotnet 支持版本号别名,欢迎 [pr](https://github.com/kongxiangyiren/version-alias)
+2、如果你想让 go 和 dotnet 支持版本号别名,欢迎 [pr](https://github.com/kongxiangyiren/version-alias)
 
 ## Usage
 
