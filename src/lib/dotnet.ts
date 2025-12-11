@@ -2,11 +2,17 @@ import { downloadTool, extractZip, extractTar, cacheDir, find } from '@actions/t
 import { addPath, getInput, setOutput, info, setFailed, error } from '@actions/core';
 import { arch, platform as Platform } from 'os';
 import { renameSync } from 'fs';
-import { get } from 'axios';
+import { default as axios } from 'axios';
 
 // 安装dotnet
 export async function dotnetInstall() {
   const platform = Platform();
+
+  if (platform !== 'win32' && platform !== 'darwin' && platform !== 'linux') {
+    info('不支持的操作系统');
+    return;
+  }
+
   const dotnetVersion = getInput('dotnet-version');
   if (!dotnetVersion) {
     info('没有dotnet-version,跳过dotnet安装');
@@ -22,7 +28,7 @@ export async function dotnetInstall() {
   const versionList = dotnetVersion.split('.');
   const channelVersion = `${versionList[0]}.${versionList[1]}`;
   const releasesUrl = `https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/${channelVersion}/releases.json`;
-  const releases = await get(releasesUrl).catch(err => {
+  const releases = await axios.get(releasesUrl).catch(err => {
     error(err);
     return null;
   });
@@ -43,7 +49,7 @@ export async function dotnetInstall() {
       return item.rid === 'win-' + arch() && item.url.endsWith('.zip');
     } else if (platform === 'darwin') {
       return item.rid === 'osx-' + arch() && item.url.endsWith('.tar.gz');
-    } else {
+    } else if (platform === 'linux') {
       return item.rid === 'linux-' + arch() && item.url.endsWith('.tar.gz');
     }
   });
@@ -66,7 +72,7 @@ export async function dotnetInstall() {
       const cachedPath = await cacheDir(dotnetExtractedFolder, 'dotnet', dotnetVersion);
       addPath(cachedPath);
       setOutput('dotnet-path', cachedPath);
-    } else {
+    } else if (platform === 'linux') {
       const dotnetExtractedFolder = await extractTar(dotnetPath, './cache/dotnet');
       const cachedPath = await cacheDir(dotnetExtractedFolder, 'dotnet', dotnetVersion);
       addPath(cachedPath);

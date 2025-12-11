@@ -7,6 +7,12 @@ import { renameSync } from 'fs';
 // 安装golang
 export async function goInstall() {
   const platform = Platform();
+
+  if (platform !== 'win32' && platform !== 'darwin' && platform !== 'linux') {
+    info('不支持的操作系统');
+    return;
+  }
+
   const goVersion = getInput('go-version');
   if (!goVersion) {
     info('没有go-version,跳过go安装');
@@ -42,7 +48,7 @@ export async function goInstall() {
 
       const cachedPath = await cacheDir(join(goExtractedFolder, 'go'), 'go', goVersion);
       addPath(cachedPath);
-    } else {
+    } else if (platform === 'linux') {
       info(`https://golang.google.cn/dl/go${goVersion}.linux-${archD}.tar.gz`);
 
       const goPath = await downloadTool(

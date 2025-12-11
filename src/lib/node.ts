@@ -8,11 +8,25 @@ import { nodeVersionAlias } from 'gitea-tool-cache-version-alias';
 // 安装node
 export async function nodeInstall() {
   const platform = Platform();
+
+  if (platform !== 'win32' && platform !== 'darwin' && platform !== 'linux') {
+    info('不支持的操作系统');
+    return;
+  }
+
   const nodeVersion = getInput('node-version');
   if (!nodeVersion) {
     info('没有node-version,跳过node安装');
     return;
   }
+
+  const NodePath1 = find('node', nodeVersion, arch());
+
+  if (NodePath1) {
+    info('node已经安装过了');
+    return setOutput('node-version', nodeVersion);
+  }
+
   const version = await nodeVersionAlias(nodeVersion, {
     mirror: 'https://npmmirror.com/mirrors/node'
   }).catch(err => err);
@@ -67,7 +81,7 @@ export async function nodeInstall() {
       );
       addPath(cachedPath);
       setOutput('node-version', version);
-    } else {
+    } else if (platform === 'linux') {
       info(
         `https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-linux-${arch()}.tar.gz`
       );

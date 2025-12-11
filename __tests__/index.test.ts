@@ -47,54 +47,54 @@ describe('gitea-tool-cache', () => {
   }, 200000);
 
   // 测试时需要把别的注释掉
-  // it('installs windows', async () => {
-  //   // rmSync('./cache', { recursive: true, force: true });
-  //   os['platform'] = 'win32';
-  //   os['arch'] = 'x64';
-  //   // node
-  //   inputs['node-version'] = '18';
-  //   await nodeInstall();
-  //   // // go
-  //   // inputs['go-version'] = '1.21.1';
-  //   // await goInstall();
-  //   // dotnet
-  //   // inputs['dotnet-version'] = '6.0.100';
-  //   // await dotnetInstall();
-  // });
+  it('installs windows', async () => {
+    // rmSync('./cache', { recursive: true, force: true });
+    os['platform'] = 'win32';
+    os['arch'] = 'x64';
+    // node
+    inputs['node-version'] = '18';
+    nodeInstall();
+    // go
+    inputs['go-version'] = '1.21.1';
+    goInstall();
+    // dotnet
+    inputs['dotnet-version'] = '6.0.100';
+    dotnetInstall();
+  });
 
   // it('installs linux', async () => {
-  //   // rmSync('./cache', { recursive: true, force: true });
+  //   rmSync('./cache', { recursive: true, force: true });
   //   os['platform'] = 'linux';
   //   os['arch'] = 'x64';
   //   inputs['node-version'] = '18';
-  //   await nodeInstall();
   //   inputs['go-version'] = '1.21.1';
-  //   await goInstall();
   //   inputs['dotnet-version'] = '5.0.401';
-  //   await dotnetInstall();
+  //   nodeInstall();
+  //   goInstall();
+  //   dotnetInstall();
   // });
 
   // it('installs darwin x64', async () => {
-  //   // rmSync('./cache', { recursive: true, force: true });
+  //   rmSync('./cache', { recursive: true, force: true });
   //   os['platform'] = 'darwin';
   //   os['arch'] = 'x64';
-  //   // inputs['node-version'] = '18.18.0';
-  //   // await nodeInstall();
-  //   // inputs['go-version'] = '1.21.1';
-  //   // await goInstall();
+  //   inputs['node-version'] = '18.18.0';
+  //   inputs['go-version'] = '1.21.1';
   //   inputs['dotnet-version'] = '5.0.401';
-  //   await dotnetInstall();
+  //    goInstall();
+  //    nodeInstall();
+  //   dotnetInstall();
   // });
 
-  it('installs darwin arm64', async () => {
-    rmSync('./cache', { recursive: true, force: true });
-    os['platform'] = 'darwin';
-    os['arch'] = 'arm64';
-    // inputs['node-version'] = '18.18.0';
-    // await nodeInstall();
-    // inputs['go-version'] = '1.21.1';
-    // await goInstall();
-    inputs['dotnet-version'] = '6.0.422';
-    await dotnetInstall();
-  });
+  // it('installs darwin arm64', async () => {
+  //   rmSync('./cache', { recursive: true, force: true });
+  //   os['platform'] = 'darwin';
+  //   os['arch'] = 'arm64';
+  //   inputs['node-version'] = '18.18.0';
+  //   inputs['go-version'] = '1.21.1';
+  //   inputs['dotnet-version'] = '6.0.422';
+  //   // nodeInstall();
+  //   // goInstall();
+  //   dotnetInstall();
+  // });
 });

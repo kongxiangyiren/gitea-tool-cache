@@ -1,5 +1,7 @@
 # gitea-tool-cache
 
+v6使用node20,如果你的运行环境不支持,请使用v5
+
 ## 注意
 
 1、go 和 dotnet 需要指定具体版本号
@@ -14,7 +16,7 @@ See [action.yml](action.yml)
 
 ```yaml
 - id: tool-cache
-  uses: kongxiangyiren/gitea-tool-cache@v5
+  uses: kongxiangyiren/gitea-tool-cache@v6
   with:
     # go 和 dotnet 需要指定具体版本号
     node-version: 18
@@ -41,7 +43,7 @@ jobs:
       - name: Checkout
         uses: https://gitea.cn/actions/checkout@v4
       - id: tool-cache
-        uses: kongxiangyiren/gitea-tool-cache@v5
+        uses: kongxiangyiren/gitea-tool-cache@v6
         with:
           # go 和 dotnet 需要指定具体版本号
           node-version: ${{ matrix.node }}
@@ -81,7 +83,7 @@ jobs:
       - name: Checkout
         uses: https://gitea.cn/actions/checkout@v4
       - id: tool-cache
-        uses: kongxiangyiren/gitea-tool-cache@v5
+        uses: kongxiangyiren/gitea-tool-cache@v6
         with:
           # 只有node支持版本号别名
           node-version: ${{ matrix.node }}
@@ -107,7 +109,7 @@ jobs:
       - name: Checkout
         uses: https://gitea.cn/actions/checkout@v4
       - name: 安装环境
-        uses: kongxiangyiren/gitea-tool-cache@v5
+        uses: kongxiangyiren/gitea-tool-cache@v6
         with:
           # 需要指定具体版本号
           go-version: ${{ matrix.go }}
@@ -132,7 +134,7 @@ jobs:
       - name: Checkout
         uses: https://gitea.cn/actions/checkout@v4
       - id: tool-cache
-        uses: kongxiangyiren/gitea-tool-cache@v5
+        uses: kongxiangyiren/gitea-tool-cache@v6
         with:
           # 需要指定具体版本号
           dotnet-version: ${{ matrix.dotnet }}
