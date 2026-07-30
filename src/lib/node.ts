@@ -3,7 +3,7 @@ import { downloadTool, extractZip, extractTar, cacheDir, find } from '@actions/t
 import { addPath, getInput, setOutput, setFailed, info } from '@actions/core';
 import { arch, platform as Platform } from 'os';
 import { renameSync } from 'fs';
-import { nodeVersionAlias } from 'gitea-tool-cache-version-alias';
+import nodeVersionAlias from 'node-version-alias';
 
 // 安装node
 export async function nodeInstall() {
@@ -28,7 +28,8 @@ export async function nodeInstall() {
   }
 
   const version = await nodeVersionAlias(nodeVersion, {
-    mirror: 'https://npmmirror.com/mirrors/node'
+    mirror: 'https://npmmirror.com/mirrors/node',
+    fetch: true
   }).catch(err => err);
 
   if (version instanceof Error) {

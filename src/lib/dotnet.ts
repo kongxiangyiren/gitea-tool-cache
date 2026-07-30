@@ -28,15 +28,19 @@ export async function dotnetInstall() {
   const versionList = dotnetVersion.split('.');
   const channelVersion = `${versionList[0]}.${versionList[1]}`;
   const releasesUrl = `https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/${channelVersion}/releases.json`;
-  const releases = await axios.get(releasesUrl).catch(err => {
-    error(err);
-    return null;
-  });
+  const releases = await axios
+    .get(releasesUrl, {
+      method: 'GET'
+    })
+    .catch(err => {
+      error(err);
+      return null;
+    });
 
-  if (!releases || !releases.data) {
+  if (!releases) {
     return setFailed('获取dotnet版本失败');
   }
-  const releasesList = (releases.data as Record<string, any>).releases;
+  const releasesList = (releases as Record<string, any>).data.releases;
   const release = releasesList.find(
     (item: Record<string, any>) => item.sdk.version === dotnetVersion
   );
