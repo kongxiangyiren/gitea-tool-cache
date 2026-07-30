@@ -7,7 +7,7 @@ env:
   TZ: Asia/Shanghai
 
 jobs:
-  build-and-deploy:
+  test-tools:
     runs-on: windows-latest
     steps:
       - name: Checkout
