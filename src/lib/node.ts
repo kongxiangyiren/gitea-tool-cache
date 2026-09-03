@@ -1,16 +1,48 @@
-import { join } from 'path';
-import { downloadTool, extractZip, extractTar, cacheDir, find } from '@actions/tool-cache';
-import { addPath, getInput, setOutput, setFailed, info } from '@actions/core';
-import { arch, platform as Platform } from 'os';
-import { renameSync } from 'fs';
+import { getInput, setOutput, setFailed, info } from '@actions/core';
+import { arch } from 'os';
+import { findAllVersions, evaluateVersions } from '@actions/tool-cache';
 import nodeVersionAlias from 'node-version-alias';
+import {
+  getSupportedPlatform,
+  downloadExtractCache,
+  findCached,
+  formatError,
+  type SupportedPlatform
+} from './common';
+
+// 各平台 node 发布包的命名与压缩格式
+const NODE_DIST: Record<
+  SupportedPlatform,
+  { archiveType: 'zip' | 'tar.gz'; fileName: (version: string, arch: string) => string }
+> = {
+  win32: {
+    archiveType: 'zip',
+    fileName: (v, a) => `node-v${v}-win-${a}`
+  },
+  darwin: {
+    archiveType: 'tar.gz',
+    fileName: (v, a) => `node-v${v}-darwin-${a}`
+  },
+  linux: {
+    archiveType: 'tar.gz',
+    fileName: (v, a) => `node-v${v}-linux-${a}`
+  }
+};
+
+// 断网时从本地缓存解析别名：在已缓存的 node 版本里匹配符合 versionSpec 的具体版本
+function resolveFromCache(versionSpec: string): string {
+  const localVersions = findAllVersions('node', arch()) ?? [];
+  if (localVersions.length === 0) {
+    return '';
+  }
+  // evaluateVersions 返回匹配到的具体版本，无匹配时返回空字符串
+  return evaluateVersions(localVersions, versionSpec) || '';
+}
 
 // 安装node
 export async function nodeInstall() {
-  const platform = Platform();
-
-  if (platform !== 'win32' && platform !== 'darwin' && platform !== 'linux') {
-    info('不支持的操作系统');
+  const platform = getSupportedPlatform();
+  if (!platform) {
     return;
   }
 
@@ -20,87 +52,46 @@ export async function nodeInstall() {
     return;
   }
 
-  const NodePath1 = find('node', nodeVersion, arch());
-
-  if (NodePath1) {
-    info('node已经安装过了');
-    return setOutput('node-version', nodeVersion);
-  }
-
-  const version = await nodeVersionAlias(nodeVersion, {
+  // 解析别名（如 18 → 18.20.4），需要联网
+  let version = await nodeVersionAlias(nodeVersion, {
     mirror: 'https://npmmirror.com/mirrors/node',
     fetch: true
   }).catch(err => err);
 
   if (version instanceof Error) {
-    // console.error('node版本错误', version);
-    setFailed('node版本错误: ' + version);
-    return;
+    // 断网兜底：别名解析失败时，尝试从本地缓存匹配出具体版本
+    const cachedVersion = resolveFromCache(nodeVersion);
+    if (!cachedVersion) {
+      setFailed('node版本错误: ' + formatError(version));
+      return;
+    }
+    info(`无法联网解析 node 版本别名，使用本地缓存匹配的版本 ${cachedVersion}`);
+    version = cachedVersion;
   }
-  const NodePath = find('node', version, arch());
 
-  if (NodePath) {
+  // 命中缓存：直接 addPath 并输出具体版本，action 可独立使用
+  const cached = findCached('node', version);
+  if (cached) {
     info('node已经安装过了');
-
-    return setOutput('node-version', version);
+    setOutput('node-version', version);
+    return;
   }
 
   try {
-    if (platform === 'win32') {
-      info(
-        `https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-win-${arch()}.zip`
-      );
+    const { archiveType, fileName } = NODE_DIST[platform];
+    const fileBase = fileName(version, arch());
+    const url = `https://registry.npmmirror.com/-/binary/node/v${version}/${fileBase}.${archiveType}`;
 
-      const nodePath = await downloadTool(
-        `https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-win-${arch()}.zip`
-      );
-
-      renameSync(nodePath, nodePath + '.zip');
-
-      const nodeExtractedFolder = await extractZip(nodePath + '.zip', './cache/node');
-      const cachedPath = await cacheDir(
-        join(nodeExtractedFolder, `node-v${version}-win-${arch()}`),
-        'node',
-        version
-      );
-      addPath(cachedPath);
-      setOutput('node-version', version);
-    } else if (platform === 'darwin') {
-      info(
-        `https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-darwin-${arch()}.tar.gz`
-      );
-
-      const nodePath = await downloadTool(
-        `https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-darwin-${arch()}.tar.gz`
-      );
-      const nodeExtractedFolder = await extractTar(nodePath, './cache/node');
-
-      const cachedPath = await cacheDir(
-        join(nodeExtractedFolder, `node-v${version}-darwin-${arch()}`),
-        'node',
-        version
-      );
-      addPath(cachedPath);
-      setOutput('node-version', version);
-    } else if (platform === 'linux') {
-      info(
-        `https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-linux-${arch()}.tar.gz`
-      );
-
-      const nodePath = await downloadTool(
-        `https://registry.npmmirror.com/-/binary/node/v${version}/node-v${version}-linux-${arch()}.tar.gz`
-      );
-      const nodeExtractedFolder = await extractTar(nodePath, './cache/node');
-
-      const cachedPath = await cacheDir(
-        join(nodeExtractedFolder, `node-v${version}-linux-${arch()}`),
-        'node',
-        version
-      );
-      addPath(cachedPath);
-      setOutput('node-version', version);
-    }
+    await downloadExtractCache({
+      url,
+      toolName: 'node',
+      version,
+      archiveType,
+      // node 解压后内部还有一层 node-vX.Y.Z-<plat>-<arch>/ 目录
+      cacheSourceSubdir: fileBase
+    });
+    setOutput('node-version', version);
   } catch (error) {
-    setFailed(JSON.stringify(error));
+    setFailed(formatError(error));
   }
 }

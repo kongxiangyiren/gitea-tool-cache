@@ -14,18 +14,14 @@
     "prepublishOnly": "pnpm run build"
   },
   "devDependencies": {
-    "@types/node": "^26.1.2",
-    "bumpp": "^12.1.1",
+    "@types/node": "^26.4.1",
+    "bumpp": "^12.2.2",
     "tsdown": "^0.22.14",
     "typescript": "^7.0.2",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   },
   "dependencies": {
     "@actions/tool-cache": "^4.0.0",
-    "axios": "^1.19.0",
     "node-version-alias": "^5.0.1"
-  },
-  "allowScripts": {
-    "esbuild@0.28.1": true
   }
 }
